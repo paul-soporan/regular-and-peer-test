@@ -10,7 +10,7 @@ jobs:
         test-case:
           - [not-provided, '@paul-soporan/test-package-has-regular-and-peer@0.2.0']
           - [
-              provided
+              provided,
               '@paul-soporan/test-package-has-regular-and-peer@0.2.0 @paul-soporan/test-package@0.2.0',
             ]
           - [

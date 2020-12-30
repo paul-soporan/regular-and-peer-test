@@ -15,59 +15,56 @@ HERE_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)
 
 cd "$TEST_DIR"
 
-setup-yarn() {
+test-yarn() {
   npm install -g yarn
 
   yarn init -2y
 
   echo >>"$TEST_DIR/.yarnrc.yml" \
     "nodeLinker: node-modules"
+
+  yarn add $TEST_CASE
 }
 
-setup-yarn-classic() {
+test-yarn-classic() {
   npm install -g yarn
 
   yarn init -y
+
+  yarn add $TEST_CASE
 }
 
-setup-npm() {
+test-npm() {
   npm install -g npm@^7
 
   npm init -y
+
+  npm install $TEST_CASE
 }
 
-setup-npm-legacy-peers() {
-  setup-npm
-
+test-npm-legacy-peers() {
   echo >>"$TEST_DIR/.npmrc" \
     "legacy-peer-deps = true"
+
+  test-npm
 }
 
-setup-npm-6() {
+test-npm-6() {
   npm install -g npm@^6
 
   npm init -y
+
+  npm install $TEST_CASE
 }
 
-setup-pnpm() {
+test-pnpm() {
   npm install -g pnpm
 
   pnpm init -y
+
+  pnpm add $TEST_CASE
 }
 
-"setup-$PACKAGE_MANAGER"
-
-case $PACKAGE_MANAGER in
-yarn | yarn-classic | pnpm)
-  $PACKAGE_MANAGER add $TEST_CASE
-  ;;
-npm | npm-legacy-peers | npm-6)
-  $PACKAGE_MANAGER install $TEST_CASE
-  ;;
-*)
-  echo "Invalid package manager $PACKAGE_MANAGER"
-  return 1
-  ;;
-esac
+"test-$PACKAGE_MANAGER"
 
 node $HERE_DIR/log-node-modules-structure $TEST_DIR
