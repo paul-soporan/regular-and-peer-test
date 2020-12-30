@@ -1,0 +1,7 @@
+{
+  "name": "regular-and-peer-test",
+  "private": true,
+  "dependencies": {
+    "prettier": "^2.2.1"
+  }
+}

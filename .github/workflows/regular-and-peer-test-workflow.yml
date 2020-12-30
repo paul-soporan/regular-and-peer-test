@@ -1,0 +1,46 @@
+on: workflow_dispatch
+
+name: Regular and peer test
+
+jobs:
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        test-case:
+          - [not-provided, '@paul-soporan/test-package-has-regular-and-peer@0.2.0']
+          - [
+              provided
+              '@paul-soporan/test-package-has-regular-and-peer@0.2.0 @paul-soporan/test-package@0.2.0',
+            ]
+          - [
+              provided-incompatible,
+              '@paul-soporan/test-package-has-regular-and-peer@0.3.0 @paul-soporan/test-package@1.0.0',
+            ]
+        packageManager:
+          - yarn
+          - yarn-classic
+          - npm
+          - npm-legacy-peers
+          - npm-6
+          - pnpm
+
+    name: 'Testing ${{matrix.test-case[0]}} w/ ${{matrix.packageManager}}'
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@master
+
+      - name: 'Use Node.js 14.x'
+        uses: actions/setup-node@master
+        with:
+          node-version: 14.x
+
+      - name: 'Create a temporary directory'
+        run: |
+          TEST_DIR=$(mktemp -d)
+          echo "TEST_DIR=$TEST_DIR" >> "$GITHUB_ENV"
+
+      - name: 'Run the test'
+        run: |
+          bash regular-and-peer-test.sh '${{matrix.packageManager}}' '${{matrix.test-case[1]}}' "$TEST_DIR"
